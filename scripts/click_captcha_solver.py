@@ -138,7 +138,10 @@ class ClickCaptchaSolver:
         try:
             response = self.client.chat.completions.create(
                 model=self.model,
-                messages=[{"role": "user", "content": content}],
+                messages=[
+                    {"role": "system", "content": "Output valid JSON only. No markdown, no explanation."},
+                    {"role": "user", "content": content},
+                ],
                 max_tokens=4096,
                 response_format={"type": "json_object"},
             )
