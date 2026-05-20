@@ -240,9 +240,9 @@ def _solve_slider(driver: WebDriver, selectors: dict) -> bool:
     try:
         import base64
         from openai import OpenAI
-        from const import ARK_API_KEY, ARK_BASE_URL, ARK_MODEL
+        import const
 
-        client = OpenAI(base_url=ARK_BASE_URL, api_key=ARK_API_KEY)
+        client = OpenAI(base_url=const.ARK_BASE_URL, api_key=const.ARK_API_KEY)
 
         if bg_url.startswith("http"):
             resp = requests.get(bg_url, timeout=15)
@@ -258,7 +258,7 @@ def _solve_slider(driver: WebDriver, selectors: dict) -> bool:
         bg_w, bg_h = img.size
 
         response = client.chat.completions.create(
-            model=ARK_MODEL,
+            model=const.ARK_MODEL,
             messages=[{
                 "role": "user",
                 "content": [

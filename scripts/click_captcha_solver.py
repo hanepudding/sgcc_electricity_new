@@ -19,7 +19,7 @@ import requests
 from PIL import Image
 from openai import OpenAI
 
-from const import ARK_API_KEY, ARK_BASE_URL, ARK_MODEL
+import const
 
 logger = logging.getLogger(__name__)
 
@@ -31,9 +31,9 @@ class ClickCaptchaSolver:
                  api_key: Optional[str] = None,
                  model: Optional[str] = None,
                  base_url: Optional[str] = None):
-        self.api_key = api_key or ARK_API_KEY
-        self.model = model or ARK_MODEL
-        self.base_url = base_url or ARK_BASE_URL
+        self.api_key = api_key or const.ARK_API_KEY
+        self.model = model or const.ARK_MODEL
+        self.base_url = base_url or const.ARK_BASE_URL
         self._client: Optional[OpenAI] = None
 
     @property
