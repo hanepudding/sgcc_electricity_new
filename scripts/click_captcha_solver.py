@@ -122,9 +122,8 @@ class ClickCaptchaSolver:
             f"大图（{main_width}×{main_height}像素）是一个图标网格。\n"
             "找到3个参考图标(A, B, C)各自在大图网格中的位置。\n"
             "匹配规则：形状和颜色必须一致，空心/实心、线条粗细是关键区分点，允许旋转。\n\n"
-            "先分析每个参考图标的特征，再逐个在网格中定位。\n"
-            '最后一行必须输出纯JSON，无其他文字：\n'
-            '{"coords":[[xA,yA],[xB,yB],[xC,yC]]}\n'
+            "输出一个JSON对象，无其他文字：\n"
+            '{"thinking":"<分析过程>","coords":[[xA,yA],[xB,yB],[xC,yC]]}\n'
             "其中x、y为图标中心的比例坐标（0~1）。"
         )
 
@@ -142,6 +141,7 @@ class ClickCaptchaSolver:
                 model=self.model,
                 messages=[{"role": "user", "content": content}],
                 max_tokens=1500,
+                extra_body={"reasoning_effort": "none"},
             )
             output = response.choices[0].message.content or ""
             logger.info(f"大模型响应: {output[:400]}")
@@ -155,7 +155,7 @@ class ClickCaptchaSolver:
         """从LLM返回文本尾部提取JSON坐标并转为像素。"""
         import json
 
-        match = re.search(r'\{[^{}]*"coords"[^{}]*\}', text)
+        match = re.search(r'\{.*"coords"\s*:\s*\[.*?\]\s*\}', text, re.DOTALL)
         if match:
             try:
                 data = json.loads(match.group())
