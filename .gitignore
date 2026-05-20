@@ -171,3 +171,7 @@ sgcc_cache.json
 debug_captcha_out
 debug_captcha_opencv
 homeassistant_sgcc_sensors
+
+# Editor / AI config
+.claude/
+.vscode/
