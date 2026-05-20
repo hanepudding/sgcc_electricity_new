@@ -12,13 +12,14 @@
 import base64
 import io
 import logging
-import os
 import re
 from typing import List, Optional, Tuple
 
 import requests
 from PIL import Image
 from openai import OpenAI
+
+from const import ARK_API_KEY, ARK_BASE_URL, ARK_MODEL
 
 logger = logging.getLogger(__name__)
 
@@ -30,9 +31,9 @@ class ClickCaptchaSolver:
                  api_key: Optional[str] = None,
                  model: Optional[str] = None,
                  base_url: Optional[str] = None):
-        self.api_key = (api_key or os.getenv('ARK_API_KEY', '').strip())
-        self.model = model or "doubao-seed-2-0-pro-260215"
-        self.base_url = base_url or "https://ark.cn-beijing.volces.com/api/v3"
+        self.api_key = api_key or ARK_API_KEY
+        self.model = model or ARK_MODEL
+        self.base_url = base_url or ARK_BASE_URL
         self._client: Optional[OpenAI] = None
 
     @property
