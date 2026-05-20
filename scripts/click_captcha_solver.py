@@ -117,24 +117,15 @@ class ClickCaptchaSolver:
 
     def _find_all_icons(self, icon_uris: List[str], main_uri: str,
                         main_width: int, main_height: int) -> List[Tuple[int, int]]:
-        """单次API调用，带链式思考提示，让LLM找到所有3个图标。"""
+        """单次API调用，让LLM找到所有3个图标。"""
         prompt = (
-            "你的任务是找图：3个参考图标分别在网格大图中的位置。\n\n"
-            "## 第一步：观察参考图标\n"
-            "仔细看3个参考图标，在脑中记住每个图标的：形状轮廓、主要颜色、内部细节、旋转方向。\n"
-            "注意3个图标是不同的，它们的颜色和/或形状一定有区别。\n\n"
-            "## 第二步：扫描大图网格\n"
-            f"大图（{main_width}×{main_height}像素）是一个图标网格（约4×4或3×3排列）。\n"
-            "逐行逐列扫描每个网格中的图标，找到与3个参考图标匹配的。\n\n"
-            "## 匹配规则\n"
-            "- 匹配图标与参考图标的形状和颜色必须一致（允许旋转，但旋转角度不影响匹配）\n"
-            "- 网格中可能有多个颜色相同的图标，但形状细节不同——请仔细辨别\n"
-            "- 空心/实心、线条粗细、是否有圆点等细节是关键区分点\n"
-            "- 3个目标图标在网格中的位置各不相同\n\n"
-            "## 输出\n"
-            "先简要说明每个参考图标的特征和匹配位置，然后输出一行坐标：\n"
-            "(x1, y1), (x2, y2), (x3, y3)\n"
-            "其中x、y为图标中心的比例坐标（0~1），分别对应图标A、B、C。"
+            f"大图（{main_width}×{main_height}像素）是一个图标网格。\n"
+            "找到3个参考图标(A, B, C)各自在大图网格中的位置。\n"
+            "匹配规则：形状和颜色必须一致，空心/实心、线条粗细是关键区分点，允许旋转。\n\n"
+            "先分析每个参考图标的特征，再逐个在网格中定位。\n"
+            '最后一行必须输出纯JSON，无其他文字：\n'
+            '{"coords":[[xA,yA],[xB,yB],[xC,yC]]}\n'
+            "其中x、y为图标中心的比例坐标（0~1）。"
         )
 
         content = []
@@ -150,7 +141,7 @@ class ClickCaptchaSolver:
             response = self.client.chat.completions.create(
                 model=self.model,
                 messages=[{"role": "user", "content": content}],
-                max_tokens=500,
+                max_tokens=1500,
             )
             output = response.choices[0].message.content or ""
             logger.info(f"大模型响应: {output[:400]}")
@@ -161,7 +152,25 @@ class ClickCaptchaSolver:
 
     def _parse_coordinates(self, text: str,
                            main_width: int, main_height: int) -> List[Tuple[int, int]]:
-        """从LLM返回文本中解析坐标并转为像素。"""
+        """从LLM返回文本尾部提取JSON坐标并转为像素。"""
+        import json
+
+        match = re.search(r'\{[^{}]*"coords"[^{}]*\}', text)
+        if match:
+            try:
+                data = json.loads(match.group())
+                result = []
+                for x, y in data["coords"]:
+                    x, y = float(x), float(y)
+                    if max(x, y) <= 1.5:
+                        result.append((round(x * main_width), round(y * main_height)))
+                    else:
+                        result.append((round(x), round(y)))
+                return result
+            except (json.JSONDecodeError, KeyError, TypeError, ValueError):
+                pass
+
+        # 回退：原有正则解析
         coords = []
         paren_pairs = re.findall(r'\(\s*(\d+\.?\d*)\s*[,，]\s*(\d+\.?\d*)\s*\)', text)
         for x_str, y_str in paren_pairs:
@@ -169,15 +178,13 @@ class ClickCaptchaSolver:
             coords.append((x, y))
 
         if not coords:
-            # 宽松匹配
             nums = re.findall(r'(\d+\.?\d+)', text)
             for i in range(0, len(nums) - 1, 2):
                 coords.append((float(nums[i]), float(nums[i + 1])))
 
         result = []
         for x, y in coords[:3]:
-            max_val = max(x, y)
-            if max_val <= 1.5:
+            if max(x, y) <= 1.5:
                 result.append((round(x * main_width), round(y * main_height)))
             else:
                 result.append((round(x), round(y)))
