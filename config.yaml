@@ -2,7 +2,7 @@ name: "SGCC Electricity"
 version: "v1.8.0"
 slug: "sgcc_electricity"
 description: "获取国网电费数据的插件"
-url: "https://github.com/ARC-MX/sgcc_electricity_new"
+url: "https://github.com/hanepudding/sgcc_electricity_new"
 arch:
   - aarch64
   - amd64
@@ -10,7 +10,7 @@ host_network: true
 startup: application
 boot: auto
 init: false
-image: "registry.cn-hangzhou.aliyuncs.com/arcw/sgcc_electricity-{arch}"
+image: "ghcr.io/hanepudding/sgcc_electricity-{arch}"
 map:
   # - addons:rw
   - config:rw
@@ -31,6 +31,8 @@ options:
   RECHARGE_NOTIFY: false
   BALANCE: 5.0
   PUSHPLUS_TOKEN: "xxxx,xxxx"
+  ARK_BASE_URL: ""
+  ARK_MODEL: ""
 schema:
   PHONE_NUMBER: str
   PASSWORD: password
@@ -45,3 +47,5 @@ schema:
   RECHARGE_NOTIFY: bool 
   BALANCE: float 
   PUSHPLUS_TOKEN: str
+  ARK_BASE_URL: str?
+  ARK_MODEL: str?
