@@ -1,25 +1,28 @@
-# Home Assistant sgcc electricity new Add-on 配置和启动
+# SGCC Electricity Add-on
 
-## 配置和启动
-### 1. 配置
-- 安装完成后，点击 "CONFIGURATION" 或 "配置" 标签
-- 根据需要修改配置参数
-![配置Add-on](https://raw.githubusercontent.com/ARC-MX/sgcc_electricity_new/refs/heads/master/ha_addons_doc/img/configuration.png)
-- 点击显示未使用的可选配置选项按钮，可以配置ignore_user_id等可选参数
-![显示未使用的可选配置选项](https://raw.githubusercontent.com/ARC-MX/sgcc_electricity_new/refs/heads/master/ha_addons_doc/img/show-unused-options.png)  
-![配置ignore_user_id](https://raw.githubusercontent.com/ARC-MX/sgcc_electricity_new/refs/heads/master/ha_addons_doc/img/configuration-ignore_user_id.png)
+定时抓取国家电网电费余额和用电量数据，推送到 Home Assistant 传感器。
 
-- 点击 "SAVE" 或 "保存" 保存配置
+## 配置
 
-### 2. 启动
-- 点击 "Info" 或 "信息" 标签页
-- 点击 "START" 或 "启动" 启动 Add-on
-![启动Add-on](https://raw.githubusercontent.com/ARC-MX/sgcc_electricity_new/refs/heads/master/ha_addons_doc/img/start-addon.png)
+安装后在「配置」标签页填写以下必填项：
 
-- 启动后，点击 "日志" 标签页，可以看到Add-on的运行状态
-![Add-on运行状态](https://raw.githubusercontent.com/ARC-MX/sgcc_electricity_new/refs/heads/master/ha_addons_doc/img/addon-running-status.png)
+| 参数 | 说明 |
+|------|------|
+| PHONE_NUMBER | 国网登录手机号 |
+| PASSWORD | 国网登录密码 |
+| HASS_TOKEN | HA 长期访问令牌 |
+| LLM_API_KEY | 大模型 API Key（需支持图片输入） |
+| LLM_BASE_URL | 大模型 API 地址 |
+| LLM_MODEL | 模型名称 |
 
-## 常见问题
-- 如果无法找到新添加的 Add-on，请尝试刷新页面
-- 如果安装失败，检查存储库地址是否正确
-- 遇到问题可以查看 "日志" 标签页的日志信息
+点击「显示未使用的可选配置选项」可配置 IGNORE_USER_ID 等可选参数。
+
+填写完成后点击「保存」，返回「信息」标签页点击「启动」。
+
+## 查看运行状态
+
+启动后点击「日志」标签页查看运行日志。首次启动会立即执行一次数据获取，之后每 12 小时自动执行。
+
+## 完整文档
+
+详细说明见 [README](https://github.com/hanepudding/sgcc_electricity_new/blob/master/README.md)。
