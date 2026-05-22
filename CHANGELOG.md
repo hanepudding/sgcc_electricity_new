@@ -1,5 +1,15 @@
 # Changelog
 
+## [v1.8.1][v1.8.1] - 2026-05-22
+
+### Fork 独立维护首版
+
+- LLM 端点可配置：`LLM_API_KEY` / `LLM_BASE_URL` / `LLM_MODEL`，支持任意 OpenAI 兼容 API（Gemini、OpenAI 等）
+- 移除火山引擎硬编码（ARK_* → LLM_*）
+- 修复 double-logging bug，统一使用 module-level logger
+- 固化依赖版本（openai==2.38.0），禁用 CloakBrowser 运行时自动更新
+- 重写 README，建立 fork 身份
+
 ## [v1.8.0][v1.8.0] - 2026-05-20
 
 ### 验证码识别升级为大模型视觉方案
@@ -89,6 +99,7 @@
 
 - 修复了一些小bug.
 
+[v1.8.1]: https://github.com/hanepudding/sgcc_electricity_new/compare/v1.8.0...v1.8.1
 [v1.8.0]: https://github.com/ARC-MX/sgcc_electricity_new/compare/v1.7.3...v1.8.0
 [v1.7.3]: https://github.com/ARC-MX/sgcc_electricity_new/compare/v1.7.2...v1.7.3
 [v1.7.2]: https://github.com/ARC-MX/sgcc_electricity_new/compare/v1.7.1...v1.7.2
