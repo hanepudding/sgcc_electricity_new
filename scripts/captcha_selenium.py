@@ -242,7 +242,7 @@ def _solve_slider(driver: WebDriver, selectors: dict) -> bool:
         from openai import OpenAI
         import const
 
-        client = OpenAI(base_url=const.ARK_BASE_URL, api_key=const.ARK_API_KEY)
+        client = OpenAI(base_url=const.LLM_BASE_URL, api_key=const.LLM_API_KEY)
 
         if bg_url.startswith("http"):
             resp = requests.get(bg_url, timeout=15)
@@ -258,7 +258,7 @@ def _solve_slider(driver: WebDriver, selectors: dict) -> bool:
         bg_w, bg_h = img.size
 
         response = client.chat.completions.create(
-            model=const.ARK_MODEL,
+            model=const.LLM_MODEL,
             messages=[{
                 "role": "user",
                 "content": [

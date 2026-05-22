@@ -1,7 +1,7 @@
 """
 点击验证码 LLM 解算器
 
-使用火山引擎豆包大模型识别验证码中的图标位置，按参考图标顺序返回点击坐标。
+使用大模型视觉识别验证码中的图标位置，按参考图标顺序返回点击坐标。
 
 策略:
 1. 下载参考图标条，按三等分裁剪为3个独立图标
@@ -31,16 +31,16 @@ class ClickCaptchaSolver:
                  api_key: Optional[str] = None,
                  model: Optional[str] = None,
                  base_url: Optional[str] = None):
-        self.api_key = api_key or const.ARK_API_KEY
-        self.model = model or const.ARK_MODEL
-        self.base_url = base_url or const.ARK_BASE_URL
+        self.api_key = api_key or const.LLM_API_KEY
+        self.model = model or const.LLM_MODEL
+        self.base_url = base_url or const.LLM_BASE_URL
         self._client: Optional[OpenAI] = None
 
     @property
     def client(self) -> OpenAI:
         if self._client is None:
             if not self.api_key:
-                raise RuntimeError("ARK_API_KEY 未设置，验证码解算将失败")
+                raise RuntimeError("LLM_API_KEY 未设置，验证码解算将失败")
             self._client = OpenAI(base_url=self.base_url, api_key=self.api_key)
         return self._client
 

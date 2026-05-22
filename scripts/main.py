@@ -26,9 +26,9 @@ def main():
                 os.environ[key] = str(value)
             logging.info(f"当前以Homeassistant Add-on 形式运行.")
             import const
-            const.ARK_API_KEY = os.getenv('ARK_API_KEY', '').strip()
-            const.ARK_BASE_URL = os.getenv('ARK_BASE_URL', 'https://ark.cn-beijing.volces.com/api/v3')
-            const.ARK_MODEL = os.getenv('ARK_MODEL', 'doubao-seed-2-0-pro-260215')
+            const.LLM_API_KEY = os.getenv('LLM_API_KEY', '').strip()
+            const.LLM_BASE_URL = os.getenv('LLM_BASE_URL', '').strip()
+            const.LLM_MODEL = os.getenv('LLM_MODEL', '').strip()
         except Exception as e:
             logging.error(f"读取 options.json 文件失败，程序将退出，错误信息: {e}。")
             sys.exit()

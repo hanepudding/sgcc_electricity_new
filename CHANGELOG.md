@@ -4,7 +4,7 @@
 
 ### 验证码识别升级为大模型视觉方案
 
-- 验证码识别从 ONNX 神经网络升级为大模型（LLM）视觉识别方案，使用火山引擎豆包模型解算腾讯点击/滑块验证码
+- 验证码识别从 ONNX 神经网络升级为大模型（LLM）视觉识别方案，支持任意 OpenAI 兼容 API
 - 浏览器反检测从 undetected-chromedriver 升级为 CloakBrowser（Chromium C++ 源码级反检测）
 
 ### 新增传感器

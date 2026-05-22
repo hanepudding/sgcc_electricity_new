@@ -28,10 +28,10 @@ PREPAY_BALANCE_SENSOR_NAME = "sensor.prepay_balance"
 BALANCE_UNIT = "CNY"
 USAGE_UNIT = "KWH"
 
-# LLM captcha solver
-ARK_API_KEY = os.getenv('ARK_API_KEY', '').strip()
-ARK_BASE_URL = os.getenv('ARK_BASE_URL', 'https://ark.cn-beijing.volces.com/api/v3')
-ARK_MODEL = os.getenv('ARK_MODEL', 'doubao-seed-2-0-pro-260215')
+# LLM captcha solver (any OpenAI-compatible API)
+LLM_API_KEY = os.getenv('LLM_API_KEY', '').strip()
+LLM_BASE_URL = os.getenv('LLM_BASE_URL', '').strip()
+LLM_MODEL = os.getenv('LLM_MODEL', '').strip()
 
 
 def get_data_dir() -> str:
