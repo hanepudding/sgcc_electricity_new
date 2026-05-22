@@ -97,13 +97,12 @@ def run_task(data_fetcher: DataFetcher):
             continue
 
 def logger_init(level: str):
-    logger = logging.getLogger()
-    logger.setLevel(level)
+    logging.basicConfig(
+        level=level,
+        format="%(asctime)s  [%(levelname)-8s] ---- %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S",
+    )
     logging.getLogger("urllib3").setLevel(logging.CRITICAL)
-    format = logging.Formatter("%(asctime)s  [%(levelname)-8s] ---- %(message)s", "%Y-%m-%d %H:%M:%S")
-    sh = logging.StreamHandler(stream=sys.stdout)
-    sh.setFormatter(format)
-    logger.addHandler(sh)
 
 
 if __name__ == "__main__":
