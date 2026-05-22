@@ -4,6 +4,8 @@ import os
 import sqlite3
 import mysql.connector
 
+logger = logging.getLogger(__name__)
+
 class DB:
     def connect_user_db(self, user_id):
         # 连接用户数据库的逻辑
@@ -29,14 +31,14 @@ class SqliteDB(DB):
                 DB_NAME = "/data/" + DB_NAME
             self.connect = sqlite3.connect(DB_NAME)
             self.connect.cursor()
-            logging.info(f"数据库 {DB_NAME} 创建成功。")
+            logger.info(f"数据库 {DB_NAME} 创建成功。")
             # 创建表名
             self.table_name = f"daily{user_id}"
             sql = f'''CREATE TABLE IF NOT EXISTS {self.table_name} (
                     date DATE PRIMARY KEY NOT NULL,
                     usage REAL NOT NULL)'''
             self.connect.execute(sql)
-            logging.info(f"数据表 {self.table_name} 创建成功")
+            logger.info(f"数据表 {self.table_name} 创建成功")
 
 				# 创建data表名
             self.table_expand_name = f"data{user_id}"
@@ -44,17 +46,17 @@ class SqliteDB(DB):
                     name TEXT PRIMARY KEY NOT NULL,
                     value TEXT NOT NULL)'''
             self.connect.execute(sql)
-            logging.info(f"数据表 {self.table_expand_name} 创建成功")
+            logger.info(f"数据表 {self.table_expand_name} 创建成功")
 
         # 如果表已存在，则不会创建
         except sqlite3.Error as e:
-            logging.debug(f"创建数据库或数据表错误: {e}")
+            logger.debug(f"创建数据库或数据表错误: {e}")
             return False
         return True
 
     def insert_data(self, data:dict):
         if self.connect is None:
-            logging.error("数据库连接未建立。")
+            logger.error("数据库连接未建立。")
             return
         # 创建索引
         try:
@@ -62,11 +64,11 @@ class SqliteDB(DB):
             self.connect.execute(sql)
             self.connect.commit()
         except BaseException as e:
-            logging.debug(f"数据更新失败: {e}")
+            logger.debug(f"数据更新失败: {e}")
 
     def insert_expand_data(self, data:dict):
         if self.connect is None:
-            logging.error("数据库连接未建立。")
+            logger.error("数据库连接未建立。")
             return
         # 创建索引
         try:
@@ -74,13 +76,13 @@ class SqliteDB(DB):
             self.connect.execute(sql)
             self.connect.commit()
         except BaseException as e:
-            logging.debug(f"数据更新失败: {e}")
+            logger.debug(f"数据更新失败: {e}")
 
     def close_connect(self):
         if self.connect:
             self.connect.close()
             self.connect = None
-            logging.info("数据库连接已关闭。")
+            logger.info("数据库连接已关闭。")
 
 class MysqlDB(DB):
     def connect_user_db(self, user_id):
@@ -99,13 +101,13 @@ class MysqlDB(DB):
             )
 
             if self.connect.is_connected():
-                logging.info(f"已连接 MySQL 数据库。")
+                logger.info(f"已连接 MySQL 数据库。")
                 return self.create_tabe(user_id)
             else:
-                logging.error("连接 MySQL 数据库失败。")
+                logger.error("连接 MySQL 数据库失败。")
                 return False
         except BaseException as e:
-            logging.error(f"缺少 MySQL 配置: {e}")
+            logger.error(f"缺少 MySQL 配置: {e}")
             return False
 
     def create_tabe(self, user_id):
@@ -117,7 +119,7 @@ class MysqlDB(DB):
                     `date` DATE PRIMARY KEY NOT NULL,
                     `usage` REAL NOT NULL)'''
             cursor.execute(sql)
-            logging.info(f"数据表 {self.table_name} 创建成功")
+            logger.info(f"数据表 {self.table_name} 创建成功")
 
             # 创建data表名
             self.table_expand_name = f"sg_data_{user_id}"
@@ -125,10 +127,10 @@ class MysqlDB(DB):
                     `name` varchar(100) PRIMARY KEY NOT NULL,
                     `value` TEXT NOT NULL)'''
             cursor.execute(sql)
-            logging.info(f"数据表 {self.table_expand_name} 创建成功")
+            logger.info(f"数据表 {self.table_expand_name} 创建成功")
             self.connect.commit()
         except BaseException as e:
-            logging.error(f"创建数据表错误: {e}")
+            logger.error(f"创建数据表错误: {e}")
             return False
         finally:
             if cursor:
@@ -137,7 +139,7 @@ class MysqlDB(DB):
 
     def insert_data(self, data:dict):
         if self.connect is None:
-            logging.error("数据库连接未建立。")
+            logger.error("数据库连接未建立。")
             return
         try:
             cursor = self.connect.cursor()
@@ -146,7 +148,7 @@ class MysqlDB(DB):
             self.connect.commit()
             return True
         except BaseException as e:
-            logging.error(f"数据更新失败: {e}")
+            logger.error(f"数据更新失败: {e}")
         finally:
             if cursor:
                 cursor.close()
@@ -154,7 +156,7 @@ class MysqlDB(DB):
 
     def insert_expand_data(self, data:dict):
         if self.connect is None:
-            logging.debug("数据库连接未建立。")
+            logger.debug("数据库连接未建立。")
             return
         try:
             cursor = self.connect.cursor()
@@ -163,7 +165,7 @@ class MysqlDB(DB):
             self.connect.commit()
             return True
         except BaseException as e:
-            logging.error(f"数据更新失败: {e}")
+            logger.error(f"数据更新失败: {e}")
         finally:
             if cursor:
                 cursor.close()
@@ -173,4 +175,4 @@ class MysqlDB(DB):
         if self.connect and self.connect.is_connected():
             self.connect.close()
             self.connect = None
-            logging.info("MySQL 数据库连接已关闭。")
+            logger.info("MySQL 数据库连接已关闭。")

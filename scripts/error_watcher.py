@@ -8,6 +8,8 @@ import functools
 from datetime import datetime
 from typing import Callable, Optional
 
+logger = logging.getLogger(__name__)
+
 class ErrorWatcher:
 
     @classmethod
@@ -101,7 +103,7 @@ class ErrorWatcher:
         """
         driver = options.get('driver', self.driver)
         if not driver:
-            logging.error("未设置截图驱动。")
+            logger.error("未设置截图驱动。")
             return
 
         error_message = str(error)
@@ -110,9 +112,9 @@ class ErrorWatcher:
 
         try:
             self.driver.save_screenshot(screenshot_path)
-            logging.error(f"发生错误: {error_message}。截图已保存至 {screenshot_path}")
+            logger.error(f"发生错误: {error_message}。截图已保存至 {screenshot_path}")
         except Exception as e:
-            logging.error(f"保存截图失败: {e}")
+            logger.error(f"保存截图失败: {e}")
             # 此处不抛出异常，避免掩盖原始错误
         finally:
             pass
